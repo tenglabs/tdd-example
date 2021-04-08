@@ -29,3 +29,35 @@ class TestNerClient(unittest.TestCase):
         result = ner.get_ents('')
         expected_result = {'ents': [{'ent': 'Laurent Fressinet', 'label': 'Person'}], 'html': ""  }
         self.assertListEqual(result['ents'], expected_result['ents'])
+
+
+    def test_get_ents_g_s_NORP_returned_serializes(self):
+        model = NerModelTestDouble('eng')
+        doc_ents = [{'text':'Laurent', 'label_':'NORP'}]
+        model.return_doc_ents(doc_ents)
+        ner = NamedEntityClient(model)
+        result = ner.get_ents('')
+        expected_result = {'ents': [{'ent': 'Laurent', 'label': 'Group'}], 'html': ""  }
+        self.assertListEqual(result['ents'], expected_result['ents'])
+
+    
+    def test_get_ents_g_s_LOC_returned_serializes(self):
+        model = NerModelTestDouble('eng')
+        doc_ents = [{'text':'ocean', 'label_':'LOC'}]
+        model.return_doc_ents(doc_ents)
+        ner = NamedEntityClient(model)
+        result = ner.get_ents('')
+        expected_result = {'ents': [{'ent': 'ocean', 'label': 'Location'}], 'html': ""  }
+        self.assertListEqual(result['ents'], expected_result['ents'])
+
+
+    def test_get_ents_g_s_Multiple_returned_serializes(self):
+        model = NerModelTestDouble('eng')
+        doc_ents = [{'text':'Ausralia', 'label_':'GPE'}, {'text':"AYO", 'label_':'TDD'}]
+        model.return_doc_ents(doc_ents)
+        ner = NamedEntityClient(model)
+        result = ner.get_ents('')
+        expected_result = {'ents': [{'ent':'Ausralia', 'label':'Location'}, {'ent':"AYO", 'label':'Location'}], 'html': ""  }
+        self.assertListEqual(result['ents'], expected_result['ents'])
+
+    
